@@ -134,11 +134,20 @@ message QEMULogEntryExc {
   fixed64 faultaddr = 4;
 }
 
+message Opcode {
+  fixed64 value = 1;
+  int32 size = 2;
+}
+
 message QEMULogEntry {
   fixed64 pc = 1;
   oneof insn {
     string disas = 2;
+    // The bytes fields should not be used with perfetto
+    // due to a limitation of arguments processing
     bytes opcode = 3;
+    // Horrible hack to pass the opcode as an integer into perfetto
+    Opcode opcode_obj = 12;
   }
   int32 cpu = 4;
   int32 asid = 5;
